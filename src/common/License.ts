@@ -17,8 +17,8 @@ export interface LicenseStatus {
 }
 
 // Storage keys
-const LICENSE_KEY_SECRET = 'awsflow.licenseKey';
-const LICENSE_STATUS_KEY = 'awsflow.licenseStatus';
+const LICENSE_KEY_SECRET = 'awsclaw.licenseKey';
+const LICENSE_STATUS_KEY = 'awsclaw.licenseStatus';
 
 // API endpoint
 const LICENSE_API_URL = 'https://www.sairefe.com/wp-json/vscode/v1/license/validate';
@@ -27,7 +27,7 @@ const LICENSE_API_URL = 'https://www.sairefe.com/wp-json/vscode/v1/license/valid
 const VALIDATION_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000;
 const GRACE_PERIOD_DAYS = 7;
 
-const PRODUCT_NAME = 'Awsflow';
+const PRODUCT_NAME = 'Awsclaw';
 const PRODUCT_ID = 807045;
 const PRODUCT_ID_QA = 807037;
 

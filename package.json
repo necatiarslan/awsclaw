@@ -1,12 +1,12 @@
 {
-  "name": "awsflow",
-  "displayName": "Awsflow: AWS AI Assistant",
+  "name": "awsclaw",
+  "displayName": "AwsClaw: AWS AI Assistant",
   "description": "Let AI access AWS services and work for you",
-  "version": "1.0.7",
+  "version": "1.0.0",
   "publisher": "NecatiARSLAN",
   "repository": {
     "type": "git",
-    "url": "https://github.com/necatiarslan/awsflow"
+    "url": "https://github.com/necatiarslan/awsclaw"
   },
   "icon": "media/extension/extension-icon.png",
   "engines": {
@@ -26,7 +26,7 @@
     "mcp",
     "ai",
     "copilot",
-    "awsflow",
+    "awsclaw",
     "coding",
     "agent"
   ],
@@ -35,14 +35,14 @@
   ],
   "main": "./out/extension.js",
   "bin": {
-    "awsflow-mcp": "./out/mcp/cli.js"
+    "awsclaw-mcp": "./out/mcp/cli.js"
   },
   "contributes": {
     "chatParticipants": [
       {
-        "id": "awsflow.chat",
+        "id": "awsclaw.chat",
         "name": "aws",
-        "fullName": "Awsflow",
+        "fullName": "Awsclaw",
         "description": "Access AWS services through chat",
         "isSticky": true
       }
@@ -3378,32 +3378,32 @@
       }
     ],
     "configuration": {
-      "title": "Awsflow: MCP",
+      "title": "Awsclaw: MCP",
       "properties": {
-        "awsflow.mcp.enabled": {
+        "awsclaw.mcp.enabled": {
           "type": "boolean",
           "default": false,
           "description": "Enable the MCP stdio host. When disabled, MCP sessions cannot be started."
         },
-        "awsflow.mcp.host": {
+        "awsclaw.mcp.host": {
           "type": "string",
           "default": "127.0.0.1",
           "description": "Host interface for the MCP bridge server."
         },
-        "awsflow.mcp.port": {
+        "awsclaw.mcp.port": {
           "type": "number",
           "default": 37114,
           "minimum": 1,
           "maximum": 65535,
           "description": "TCP port for the MCP bridge server."
         },
-        "awsflow.mcp.sessionCap": {
+        "awsclaw.mcp.sessionCap": {
           "type": "number",
           "default": 3,
           "minimum": 1,
           "description": "Maximum concurrent MCP stdio sessions. Additional requests queue until a slot is free."
         },
-        "awsflow.mcp.disabledTools": {
+        "awsclaw.mcp.disabledTools": {
           "type": "array",
           "description": "List of tool names to disable for MCP sessions (independent from Service Access settings).",
           "items": {
@@ -3437,88 +3437,89 @@
     },
     "commands": [
       {
-        "command": "awsflow.AskAwsflow",
-        "title": "Awsflow:Ask Awsflow"
+        "command": "awsclaw.AskAwsclaw",
+        "title": "Awsclaw:Ask Awsclaw"
       },
       {
-        "command": "awsflow.RefreshCredentials",
-        "title": "Awsflow:Refresh Credentials"
+        "command": "awsclaw.RefreshCredentials",
+        "title": "Awsclaw:Refresh Credentials"
       },
       {
-        "command": "awsflow.ListAwsProfiles",
-        "title": "Awsflow:List Profiles"
+        "command": "awsclaw.ListAwsProfiles",
+        "title": "Awsclaw:List Profiles"
       },
       {
-        "command": "awsflow.SetAwsProfile",
-        "title": "Awsflow:Set Active Profile"
+        "command": "awsclaw.SetAwsProfile",
+        "title": "Awsclaw:Set Active Profile"
       },
       {
-        "command": "awsflow.TestAwsConnection",
-        "title": "Awsflow:Test Aws Connection"
+        "command": "awsclaw.TestAwsConnection",
+        "title": "Awsclaw:Test Aws Connection"
       },
       {
-        "command": "awsflow.SetAwsEndpoint",
-        "title": "Awsflow:Set AWS Endpoint"
+        "command": "awsclaw.SetAwsEndpoint",
+        "title": "Awsclaw:Set AWS Endpoint"
       },
       {
-        "command": "awsflow.SetDefaultRegion",
-        "title": "Awsflow:Set Default AWS Region"
+        "command": "awsclaw.SetDefaultRegion",
+        "title": "Awsclaw:Set Default AWS Region"
       },
       {
-        "command": "awsflow.SetAwsReadonlyMode",
-        "title": "Awsflow:Set AWS Readonly Mode"
+        "command": "awsclaw.SetAwsReadonlyMode",
+        "title": "Awsclaw:Set AWS Readonly Mode"
       },
       {
-        "command": "awsflow.OpenCloudWatchView",
-        "title": "Awsflow:Open CloudWatch Log View"
+        "command": "awsclaw.OpenCloudWatchView",
+        "title": "Awsclaw:Open CloudWatch Log View"
       },
       {
-        "command": "awsflow.OpenS3ExplorerView",
-        "title": "Awsflow:Open S3 Explorer View"
+        "command": "awsclaw.OpenS3ExplorerView",
+        "title": "Awsclaw:Open S3 Explorer View"
       },
       {
-        "command": "awsflow.ShowCommandHistory",
-        "title": "Awsflow:Command History"
+        "command": "awsclaw.ShowCommandHistory",
+        "title": "Awsclaw:Command History"
       },
       {
-        "command": "awsflow.OpenServiceAccessView",
-        "title": "Awsflow:Service Access Settings"
+        "command": "awsclaw.OpenServiceAccessView",
+        "title": "Awsclaw:Service Access Settings"
       },
       {
-        "command": "awsflow.ActivatePro",
-        "title": "Awsflow:Activate Pro"
+        "command": "awsclaw.ActivatePro",
+        "title": "Awsclaw:Activate Pro"
       },
       {
-        "command": "awsflow.EnterLicenseKey",
-        "title": "Awsflow:Enter License Key"
+        "command": "awsclaw.EnterLicenseKey",
+        "title": "Awsclaw:Enter License Key"
       },
       {
-        "command": "awsflow.ResetLicenseKey",
-        "title": "Awsflow:Reset License Key"
+        "command": "awsclaw.ResetLicenseKey",
+        "title": "Awsclaw:Reset License Key"
       },
       {
-        "command": "awsflow.StartMcpServer",
-        "title": "Awsflow:Start MCP Server"
+        "command": "awsclaw.StartMcpServer",
+        "title": "Awsclaw:Start MCP Server"
       },
       {
-        "command": "awsflow.StopMcpServers",
-        "title": "Awsflow:Stop MCP Servers"
+        "command": "awsclaw.StopMcpServers",
+        "title": "Awsclaw:Stop MCP Servers"
       },
       {
-        "command": "awsflow.OpenMcpManageView",
-        "title": "Awsflow:MCP Management"
+        "command": "awsclaw.OpenMcpManageView",
+        "title": "Awsclaw:MCP Management"
       }
     ]
   },
   "scripts": {
+    "compile": "tsc -b --force",
     "discover-tools": "ts-node scripts/discoverTools.ts",
     "extract-schemas": "ts-node scripts/extractSchemas.ts",
     "sync-schemas": "ts-node scripts/syncSchemas.ts",
     "generate-package": "ts-node scripts/generatePackageJson.ts",
     "validate-schemas": "ts-node scripts/validateSchemas.ts",
     "prebuild": "npm run sync-schemas && npm run discover-tools && npm run generate-package",
-    "build": "node esbuild.js",
-    "build:prod": "node esbuild.js --production",
+    "build": "npm run compile && node esbuild.js",
+    "build:prod": "npm run compile && node esbuild.js --production",
     "typecheck": "tsc --noEmit --incremental",
     "lint": "eslint src --ext ts --max-warnings=0",
     "watch": "npm-run-all -p watch:*",

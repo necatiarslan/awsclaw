@@ -1,6 +1,6 @@
 # How to Add a New AWS Service
 
-This guide provides step-by-step instructions for adding a new AWS service to the Awsflow extension.
+This guide provides step-by-step instructions for adding a new AWS service to the Awsclaw extension.
 
 ## Overview
 
@@ -268,7 +268,7 @@ This will:
 
 **Expected Output:**
 ```
-🔍 Discovering tools in /Users/.../awsflow/src...
+🔍 Discovering tools in /Users/.../awsclaw/src...
 
   Found: ECSTool
   ✅ ECSTool validated
@@ -709,7 +709,7 @@ Use this checklist when adding a new service:
 ## Support
 
 - **Architecture Documentation**: [docs/language_tools.md](language_tools.md)
-- **GitHub Issues**: https://github.com/necatiarslan/awsflow/issues
+- **GitHub Issues**: https://github.com/necatiarslan/awsclaw/issues
 - **Example Tools**: See `src/s3/S3Tool.ts`, `src/ec2/EC2Tool.ts`
 
 ---

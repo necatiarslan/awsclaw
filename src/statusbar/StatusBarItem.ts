@@ -25,7 +25,7 @@ export class StatusBarItem implements vscode.Disposable {
         ui.logToOutput('StatusBarItem.constructor Started');
         StatusBarItem.Current = this;
 
-        const statusBarClickedCommand = 'awsflow.statusBarClicked';
+        const statusBarClickedCommand = 'awsclaw.statusBarClicked';
 
          if (Session.Current) {
             Session.Current.Context.subscriptions.push(vscode.commands.registerCommand(statusBarClickedCommand, StatusBarItem.StatusBarClicked));
@@ -142,7 +142,7 @@ export class StatusBarItem implements vscode.Disposable {
     public RefreshText() {
         ui.logToOutput('StatusBarItem.RefreshText Started');
         
-        this.ToolTip = "Awsflow: @aws How can I help you?";
+        this.ToolTip = "Awsclaw: @aws How can I help you?";
         if (!Session.Current?.CurrentCredentials) {
             this.ToolTip += "\nNo Aws Credentials Found !!!";
             this.Text = "$(plug) Aws No Credentials";
@@ -195,7 +195,7 @@ export class StatusBarItem implements vscode.Disposable {
     }
 
     public static OpenCommandPalette() {
-        const extensionPrefix = 'Awsflow:';
+        const extensionPrefix = 'Awsclaw:';
         vscode.commands.executeCommand('workbench.action.quickOpen', `> ${extensionPrefix}`);
     }
 

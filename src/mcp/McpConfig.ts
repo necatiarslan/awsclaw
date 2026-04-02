@@ -8,9 +8,9 @@ interface McpState {
     port: number;
 }
 
-const STATE_KEY = 'awsflow.mcp.state';
-const DEFAULT_HOST = process.env.AWSFLOW_MCP_HOST || '127.0.0.1';
-const DEFAULT_PORT = parseInt(process.env.AWSFLOW_MCP_PORT || '37114', 10) || 37114;
+const STATE_KEY = 'awsclaw.mcp.state';
+const DEFAULT_HOST = process.env.AWSCLAW_MCP_HOST || '127.0.0.1';
+const DEFAULT_PORT = parseInt(process.env.AWSCLAW_MCP_PORT || '37114', 10) || 37114;
 const DEFAULT_STATE: McpState = {
     enabled: false,
     sessionCap: 20,

@@ -53,7 +53,7 @@ export class McpManager implements vscode.Disposable {
         const dispatcher = new McpDispatcher(new Set(this.enabledTools()));
         const session = new McpSession(sessionId, dispatcher, (id) => this.onSessionClosed(id));
         const pty: vscode.Pseudoterminal = session;
-        const terminal = vscode.window.createTerminal({ name: `Awsflow MCP ${sessionId}`, pty });
+        const terminal = vscode.window.createTerminal({ name: `Awsclaw MCP ${sessionId}`, pty });
         this.activeSessions.set(sessionId, { terminal, session });
         terminal.show(false);
         //ui.showInformationMessage(`MCP session ${sessionId} started.`);
@@ -177,7 +177,7 @@ export class McpManager implements vscode.Disposable {
 
     private effectiveState() {
         const stored = this.config.load();
-        const config = vscode.workspace.getConfiguration('awsflow.mcp');
+        const config = vscode.workspace.getConfiguration('awsclaw.mcp');
         const enabled = config.get<boolean>('enabled', stored.enabled);
         const sessionCap = config.get<number>('sessionCap', stored.sessionCap);
         const disabledTools = config.get<string[]>('disabledTools', stored.disabledTools);

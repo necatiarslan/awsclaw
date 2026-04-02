@@ -13,7 +13,7 @@ interface UsageRecord {
 }
 
 const DAILY_LIMIT = 20;
-const USAGE_KEY = 'awsflow.dailyToolUsage';
+const USAGE_KEY = 'awsclaw.dailyToolUsage';
 const EXEMPT_TOOLS = new Set<string>([
     'SessionTool',
     'FileOperationsTool',

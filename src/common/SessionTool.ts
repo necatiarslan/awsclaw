@@ -95,7 +95,7 @@ export class SessionTool extends BaseTool<SessionToolInput> {
   }
 
   private async activateProVersion() {
-    await vscode.commands.executeCommand('awsflow.ActivatePro');
+    await vscode.commands.executeCommand('awsclaw.ActivatePro');
     return { ok: true, message: 'Activation flow started' };
   }
 

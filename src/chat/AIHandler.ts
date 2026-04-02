@@ -6,7 +6,7 @@ import * as path from "path";
 import * as MessageHub from "../common/MessageHub";
 import { getDailyUsageStatus } from "../common/ToolUsageQuota";
 
-const PARTICIPANT_ID = "awsflow.chat";
+const PARTICIPANT_ID = "awsclaw.chat";
 const DEFAULT_PROMPT = "What can you do to help me with AWS tasks?";
 
 // Enhanced resource tracking with relationships and metadata
@@ -1036,7 +1036,7 @@ export class AIHandler {
 
     stream.markdown("\n\n");
     stream.button({
-      command: "awsflow.OpenCloudWatchView",
+      command: "awsclaw.OpenCloudWatchView",
       title: "Open Log View",
       arguments: logStream ? [logGroup.name, logStream.name] : [logGroup.name],
     });
@@ -1050,7 +1050,7 @@ export class AIHandler {
 
     stream.markdown("\n\n");
     stream.button({
-      command: "awsflow.OpenS3ExplorerView",
+      command: "awsclaw.OpenS3ExplorerView",
       title: "Open S3 View",
       arguments: [bucket.name],
     });
@@ -1070,7 +1070,7 @@ export class AIHandler {
 
     stream.markdown("\n\n");
     stream.button({
-      command: "awsflow.LoadMoreResults",
+      command: "awsclaw.LoadMoreResults",
       title: "Load More",
       arguments: [mostRecent],
     });
@@ -1082,7 +1082,7 @@ export class AIHandler {
       "\n🙏 [Donate](https://github.com/sponsors/necatiarslan) if you found me useful!"
     );
     stream.markdown(
-      "\n🤔 [New Feature](https://github.com/necatiarslan/awsflow/issues/new) Request"
+      "\n🤔 [New Feature](https://github.com/necatiarslan/awsclaw/issues/new) Request"
     );
   }
 
@@ -1102,7 +1102,7 @@ export class AIHandler {
       stream.markdown("I'm sorry, I couldn't connect to the AI model.");
     }
     stream.markdown(
-      "\n🪲 Please [Report an Issue](https://github.com/necatiarslan/awsflow/issues/new)"
+      "\n🪲 Please [Report an Issue](https://github.com/necatiarslan/awsclaw/issues/new)"
     );
   }
 
@@ -1184,11 +1184,11 @@ export class AIHandler {
     }
     stream.markdown("\n\n");
     stream.button({
-      command: "awsflow.ActivatePro",
+      command: "awsclaw.ActivatePro",
       title: "Activate Pro Version",
     });
     stream.button({
-      command: "awsflow.EnterLicenseKey",
+      command: "awsclaw.EnterLicenseKey",
       title: "Enter License Key",
     });
   }

@@ -62,12 +62,12 @@ export class McpManageView {
         const normalizedPath = cliPath.replace(/\\/g, '/');
         const config = {
             mcpServers: {
-                'awsflow': {
+                'awsclaw': {
                     command: 'node',
                     args: [normalizedPath],
                     env: {
-                        AWSFLOW_MCP_PORT: String(snapshot.port),
-                        AWSFLOW_MCP_HOST: snapshot.host
+                        AWSCLAW_MCP_PORT: String(snapshot.port),
+                        AWSCLAW_MCP_HOST: snapshot.host
                     }
                 }
             }

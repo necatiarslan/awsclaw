@@ -366,7 +366,7 @@ export class CloudWatchLogView {
         <table>
             <tr>
                 <td>
-                    <a href="https://github.com/necatiarslan/awsflow/issues/new" style="cursor: pointer; text-decoration: none;">Bug Report & Feature Request</a>
+                    <a href="https://github.com/necatiarslan/awsclaw/issues/new" style="cursor: pointer; text-decoration: none;">Bug Report & Feature Request</a>
                 </td>
             </tr>
         </table>

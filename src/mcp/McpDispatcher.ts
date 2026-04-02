@@ -31,7 +31,7 @@ export class McpDispatcher {
             {
                 uri: `file://${path.join(__dirname, '../../README_AWS_SERVICES.md')}`,
                 name: 'README_AWS_SERVICES',
-                description: 'Reference for AWS services supported by Awsflow MCP tools',
+                description: 'Reference for AWS services supported by Awsclaw MCP tools',
                 mimeType: 'text/markdown'
             }
         ];
@@ -127,7 +127,7 @@ export class McpDispatcher {
                             prompts: {}
                         },
                         serverInfo: {
-                            name: 'awsflow',
+                            name: 'awsclaw',
                             version: '1.0.0'
                         }
                     }

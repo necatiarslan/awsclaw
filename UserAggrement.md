@@ -2,7 +2,7 @@
 
 Effective Date: February 4, 2026
 
-This Pro Plan User Agreement ("Agreement") is between Necati ARSLAN ("Provider") and you ("User"). It governs your purchase and use of the Pro plan for the Awsflow VS Code Extension (the "Product"). By purchasing, activating, or using the Pro plan, you agree to these terms.
+This Pro Plan User Agreement ("Agreement") is between Necati ARSLAN ("Provider") and you ("User"). It governs your purchase and use of the Pro plan for the Awsclaw VS Code Extension (the "Product"). By purchasing, activating, or using the Pro plan, you agree to these terms.
 
 ## 1. License Grant
 Provider grants you a limited, non-exclusive, non-transferable, revocable license to use the Pro plan for your own internal use, subject to this Agreement.

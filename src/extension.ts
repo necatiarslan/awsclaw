@@ -14,7 +14,7 @@ import { McpManageView } from './mcp/McpManageView';
 import { initializeLicense, isLicenseValid, promptForLicense, clearLicense } from "./common/License";
 
 export function activate(context: vscode.ExtensionContext) {
-	ui.logToOutput('Awsflow is now active!');
+	ui.logToOutput('Awsclaw is now active!');
 
 	// Initialize Core Services
 	initializeLicense(context);
@@ -53,21 +53,21 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Register Commands
 	context.subscriptions.push(
-		vscode.commands.registerCommand('awsflow.AskAwsflow', async () => { await AIHandler.Current.askAI(); }),
+		vscode.commands.registerCommand('awsclaw.AskAwsclaw', async () => { await AIHandler.Current.askAI(); }),
 
-		vscode.commands.registerCommand('awsflow.SetAwsEndpoint', async () => { Session.Current?.SetAwsEndpoint(); }),
+		vscode.commands.registerCommand('awsclaw.SetAwsEndpoint', async () => { Session.Current?.SetAwsEndpoint(); }),
 
-		vscode.commands.registerCommand('awsflow.SetDefaultRegion', async () => { Session.Current?.SetAwsRegion(); }),
+		vscode.commands.registerCommand('awsclaw.SetDefaultRegion', async () => { Session.Current?.SetAwsRegion(); }),
 
-		vscode.commands.registerCommand('awsflow.SetAwsReadonlyMode', async () => { await Session.Current?.SetAwsReadonlyMode(); }),
+		vscode.commands.registerCommand('awsclaw.SetAwsReadonlyMode', async () => { await Session.Current?.SetAwsReadonlyMode(); }),
 
-		vscode.commands.registerCommand('awsflow.RefreshCredentials', () => { Session.Current?.RefreshCredentials(); }),
+		vscode.commands.registerCommand('awsclaw.RefreshCredentials', () => { Session.Current?.RefreshCredentials(); }),
 
-		vscode.commands.registerCommand('awsflow.ListAwsProfiles', () => { StatusBarItem.Current.ListAwsProfiles(); }),
+		vscode.commands.registerCommand('awsclaw.ListAwsProfiles', () => { StatusBarItem.Current.ListAwsProfiles(); }),
 
-		vscode.commands.registerCommand('awsflow.SetAwsProfile', () => { StatusBarItem.Current.SetAwsProfile(); }),
+		vscode.commands.registerCommand('awsclaw.SetAwsProfile', () => { StatusBarItem.Current.SetAwsProfile(); }),
 
-		vscode.commands.registerCommand('awsflow.TestAwsConnection', async () => {
+		vscode.commands.registerCommand('awsclaw.TestAwsConnection', async () => {
 			const result = await stsAPI.TestAwsConnection();
 			if (result.isSuccessful) {
 				ui.showInfoMessage('AWS connectivity test successful.');
@@ -76,7 +76,7 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		}),
 
-		vscode.commands.registerCommand('awsflow.OpenCloudWatchView', async (logGroup: string, logStream?: string) => {
+		vscode.commands.registerCommand('awsclaw.OpenCloudWatchView', async (logGroup: string, logStream?: string) => {
 			if (!Session.Current) {
 				ui.showErrorMessage('Session not initialized', new Error('No session'));
 				return;
@@ -87,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}),
 
 
-		vscode.commands.registerCommand('awsflow.OpenS3ExplorerView', async (bucket: string, key?: string) => {
+		vscode.commands.registerCommand('awsclaw.OpenS3ExplorerView', async (bucket: string, key?: string) => {
 			if (!Session.Current) {
 				ui.showErrorMessage('Session not initialized', new Error('No session'));
 				return;
@@ -95,7 +95,7 @@ export function activate(context: vscode.ExtensionContext) {
 			S3Explorer.Render(Session.Current.ExtensionUri, bucket, key);
 		}),
 
-        vscode.commands.registerCommand('awsflow.ShowCommandHistory', () => {
+        vscode.commands.registerCommand('awsclaw.ShowCommandHistory', () => {
             if (!Session.Current) {
                 ui.showErrorMessage('Session not initialized', new Error('No session'));
                 return;
@@ -103,7 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
             CommandHistoryView.Render(Session.Current.ExtensionUri);
         }),
 
-        vscode.commands.registerCommand('awsflow.OpenServiceAccessView', () => {
+        vscode.commands.registerCommand('awsclaw.OpenServiceAccessView', () => {
             if (!Session.Current) {
                 ui.showErrorMessage('Session not initialized', new Error('No session'));
                 return;
@@ -111,7 +111,7 @@ export function activate(context: vscode.ExtensionContext) {
             ServiceAccessView.Render(Session.Current.ExtensionUri);
         }),
 
-		vscode.commands.registerCommand('awsflow.ActivatePro', () => {
+		vscode.commands.registerCommand('awsclaw.ActivatePro', () => {
 			if (Session.Current?.IsProVersion) {
 				ui.showInfoMessage('You already have an active Pro license!');
 				return;
@@ -123,10 +123,10 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 
 			vscode.env.openExternal(vscode.Uri.parse(buyUrl));
-			vscode.commands.executeCommand('awsflow.EnterLicenseKey');
+			vscode.commands.executeCommand('awsclaw.EnterLicenseKey');
 		}),
 
-		vscode.commands.registerCommand('awsflow.EnterLicenseKey', async () => {
+		vscode.commands.registerCommand('awsclaw.EnterLicenseKey', async () => {
 			if (Session.Current?.IsProVersion) {
 				ui.showInfoMessage('You already have an active Pro license!');
 				return;
@@ -138,7 +138,7 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		}),
 
-		vscode.commands.registerCommand('awsflow.ResetLicenseKey', async () => {
+		vscode.commands.registerCommand('awsclaw.ResetLicenseKey', async () => {
 			await clearLicense();
 			ui.showInfoMessage('License key has been reset. Please enter a new license key to activate Pro features.');
 			if (Session.Current) {
@@ -146,7 +146,7 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		}),
 
-		vscode.commands.registerCommand('awsflow.StartMcpServer', async () => {
+		vscode.commands.registerCommand('awsclaw.StartMcpServer', async () => {
 			if (!Session.Current) {
 				ui.showErrorMessage('Session not initialized', new Error('No session'));
 				return;
@@ -158,7 +158,7 @@ export function activate(context: vscode.ExtensionContext) {
 			await mcpManager.startSession();
 		}),
 
-		vscode.commands.registerCommand('awsflow.StopMcpServers', () => {
+		vscode.commands.registerCommand('awsclaw.StopMcpServers', () => {
 			if(!Session.Current) { return; }
 			if(Session.Current.IsHostSupportLanguageTools()) {
 				ui.showInfoMessage('MCP server is not required in VsCode');
@@ -168,7 +168,7 @@ export function activate(context: vscode.ExtensionContext) {
 			ui.showInfoMessage('All MCP sessions stopped.');
 		}),
 
-		vscode.commands.registerCommand('awsflow.OpenMcpManageView', () => {
+		vscode.commands.registerCommand('awsclaw.OpenMcpManageView', () => {
 			if(!Session.Current) { return; }
 			if(Session.Current.IsHostSupportLanguageTools()) {
 				ui.showInfoMessage('MCP server is not required in VsCode');
@@ -177,7 +177,7 @@ export function activate(context: vscode.ExtensionContext) {
 			McpManageView.Render(context.extensionUri, mcpManager);
 		}),
 
-		vscode.commands.registerCommand('awsflow.LoadMoreResults', async (paginationContext: any) => {
+		vscode.commands.registerCommand('awsclaw.LoadMoreResults', async (paginationContext: any) => {
 			if (!paginationContext) {
 				ui.showErrorMessage('Pagination context not available', new Error('No pagination context'));
 				return;
@@ -201,6 +201,6 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-	ui.logToOutput('Awsflow is now de-active!');
+	ui.logToOutput('Awsclaw is now de-active!');
 }
 

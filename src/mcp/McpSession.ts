@@ -21,7 +21,7 @@ export class McpSession implements vscode.Pseudoterminal {
     }
 
     open(): void {
-        this.writeLine(`Awsflow MCP session ${this.sessionId} started.`);
+        this.writeLine(`Awsclaw MCP session ${this.sessionId} started.`);
         this.writeLine('Type Ctrl+C to close this session.');
     }
 

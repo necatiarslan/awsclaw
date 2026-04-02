@@ -1,8 +1,8 @@
-# Awsflow: AWS AI Assistant 🤖❤️☁️
+# Aws Claw: AWS AI Assistant 🤖❤️☁️
 
 ![screenshoot](docs/readme/movie.gif)
 
-Awsflow is a Visual Studio Code (and forks including Google Antigravity, Windsurf etc.) extension that brings AWS interaction into your chat experience. Use natural language to inspect and operate AWS resources with your existing credentials. The extension exposes AWS-aware tools that execute actions directly on your behalf.
+Aws Claw is a Visual Studio Code (and forks including Google Antigravity, Windsurf etc.) extension that brings AWS interaction into your chat experience. Use natural language to inspect and operate AWS resources with your existing credentials. The extension exposes AWS-aware tools that execute actions directly on your behalf.
 
 ## 💬 Chat Modes
 
@@ -11,8 +11,8 @@ Awsflow is a Visual Studio Code (and forks including Google Antigravity, Windsur
 - **Ask Or Edit Mode**: You can also ask questions or issue commands directly using the "@aws" prefix in the chat input. The assistant will respond with the requested information or perform the specified actions. We recommend this mode for quick queries or simple tasks or if you dont have access to Agent/Plan mode.
 
 ## 🔌 MCP Support
-- **Vscode**: No need to setup MCP server. Awsflow is build in Vscode Chat (Copilot) and no extra setup is required. Just start a chat about your AWS resources.
-- **Google Antigravity / Windsurf / Others**: You need a local MCP server to connect these editors with Awsflow. See the [README_MCP](README_MCP.md) for detailed setup instructions.
+- **Vscode**: No need to setup MCP server. Aws Claw is build in Vscode Chat (Copilot) and no extra setup is required. Just start a chat about your AWS resources.
+- **Google Antigravity / Windsurf / Others**: You need a local MCP server to connect these editors with Aws Claw. See the [README_MCP](README_MCP.md) for detailed setup instructions.
 
 ## 🔑 Supported AWS Services
 | | | | |
@@ -42,7 +42,7 @@ Click [here](README_AWS_SERVICES.md) for the full list of supported AWS services
 ## ❓ Q & A
 
 ### Authentication
-- **Q**: How does Awsflow authenticate to AWS?  
+- **Q**: How does Aws Claw authenticate to AWS?  
    **A**: It uses your existing AWS credentials configured locally (via AWS CLI config, SSO, environment variables, etc.) and the AWS SDK provider chain.
 
 - **Q**: Are my AWS credentials stored by the extension?  
@@ -70,7 +70,7 @@ Click [here](README_AWS_SERVICES.md) for the full list of supported AWS services
     - List, get, describe, search, scan, query actions are read-only and safe.
 
 - **Q**: Can I see the AWS API calls being made?  
-   **A**: Yes, you can see the AWS API call history in "Command History" panel and in the output channel named "Awsflow-Log". To open the output channel, go to View -> Output, then select "Awsflow-Log" from the dropdown. Top open the "Command History" panel, click on the "Awsflow: Open Command History" command from the Command Palette. You can see the api call responses when you export the history to a file.
+   **A**: Yes, you can see the AWS API call history in "Command History" panel and in the output channel named "Aws Claw-Log". To open the output channel, go to View -> Output, then select "Aws Claw-Log" from the dropdown. Top open the "Command History" panel, click on the "Aws Claw: Open Command History" command from the Command Palette. You can see the api call responses when you export the history to a file.
 
 ## 📺 Screenshots
 
@@ -90,8 +90,8 @@ Click [here](README_AWS_SERVICES.md) for the full list of supported AWS services
 ## 🏁 Quick Start
 
 1. **Aws Credentials**: Ensure you have AWS credentials configured locally. You can use AWS CLI to set up profiles or SSO. 
-2. **Test connectivity**: Click "🔌Aws" in the status bar and Run "Awsflow: Test AWS Connection" to verify AWS access. You can set default profile, region and endpoint (for Localstack) if you need.
-3. **Google Antigravity / Windsurf / Others**: You need a local MCP server to connect these editors with Awsflow. See the [README_MCP](README_MCP.md) for detailed setup instructions.
+2. **Test connectivity**: Click "🔌Aws" in the status bar and Run "Aws Claw: Test AWS Connection" to verify AWS access. You can set default profile, region and endpoint (for Localstack) if you need.
+3. **Google Antigravity / Windsurf / Others**: You need a local MCP server to connect these editors with Aws Claw. See the [README_MCP](README_MCP.md) for detailed setup instructions.
 4. **Open Chat**: Open Chat (use @aws in Ask or Edit Mode) and ask a question, for example:
    - List my S3 buckets
    - Tail the latest CloudWatch log events for /aws/lambda/my-fn
@@ -116,6 +116,6 @@ Click [here](README_AWS_SERVICES.md) for the full list of supported AWS services
 
 ## 💖 Links
 
-- **Issues & Feature Requests**: https://github.com/necatiarslan/awsflow/issues
+- **Issues & Feature Requests**: https://github.com/necatiarslan/awsclaw/issues
 - **Sponsor**: https://github.com/sponsors/necatiarslan
 - **License**: MIT

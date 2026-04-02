@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Awsflow extension provides **20 AWS service tools** for VS Code's Language Model API and Model Context Protocol (MCP). This document describes the refactored architecture that centralizes tool definitions in external JSON schemas, enabling automated discovery and reducing maintenance overhead by **75%**.
+The Awsclaw extension provides **20 AWS service tools** for VS Code's Language Model API and Model Context Protocol (MCP). This document describes the refactored architecture that centralizes tool definitions in external JSON schemas, enabling automated discovery and reducing maintenance overhead by **75%**.
 
 ## Architecture Diagram
 
@@ -583,8 +583,8 @@ When contributing new tools:
 
 ## Support
 
-- **GitHub Issues**: https://github.com/necatiarslan/awsflow/issues
-- **Discussions**: https://github.com/necatiarslan/awsflow/discussions
+- **GitHub Issues**: https://github.com/necatiarslan/awsclaw/issues
+- **Discussions**: https://github.com/necatiarslan/awsclaw/discussions
 
 ---
 
