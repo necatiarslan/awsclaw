@@ -1,23 +1,23 @@
 # Model Context Protocol (MCP) Server Guide
 
-The MCP server in this repository allows external tools, AI agents (like Antigravity, Windsurf), or other VS Code instances to leverage the AWS AI capabilities built into the **Awsclaw: AWS AI Assistant** extension.
+The MCP server in this repository allows external tools, AI agents (like Antigravity, Windsurf), or other VS Code instances to leverage the AWS AI capabilities built into the **Aws Claw: AWS AI Assistant** extension.
 
 ## 1. Prerequisites
 
-*   **Extensions**: [Awsclaw: AWS AI Assistant](https://marketplace.visualstudio.com/items?itemName=NecatiARSLAN.awsclaw) installed and active.
+*   **Extensions**: [Aws Claw: AWS AI Assistant](https://marketplace.visualstudio.com/items?itemName=NecatiARSLAN.awsclaw) installed and active.
 *   **AWS Setup**: Credentials configured locally (via `~/.aws/credentials` or environment variables) with permissions to perform desired AWS operations.
 *   **Runtime**: [Node.js](https://nodejs.org/) installed on your machine.
 
 ## 2. Starting the Server
 
 1.  Open the Command Palette (`Cmd+Shift+P`).
-2.  Run the command: `Awsclaw: Start MCP Server`.
-3.  A new terminal labeled `Awsclaw MCP 1` will appear.
+2.  Run the command: `Aws Claw: Start MCP Server`.
+3.  A new terminal labeled `Aws Claw MCP 1` will appear.
 4.  The extension will start a TCP bridge listening on `127.0.0.1:37114`.
 
 ## 3. MCP Server Manager (GUI)
 
-Prefer a UI? Open the Command Palette and run `Awsclaw: MCP Management` to launch the MCP Server Manager view. From there you can:
+Prefer a UI? Open the Command Palette and run `Aws Claw: MCP Management` to launch the MCP Server Manager view. From there you can:
 
 * Start, stop, or check the MCP bridge status.
 * Set the bridge host and port without touching environment variables.

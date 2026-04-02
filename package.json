@@ -42,7 +42,7 @@
       {
         "id": "awsclaw.chat",
         "name": "aws",
-        "fullName": "Awsclaw",
+        "fullName": "Aws Claw",
         "description": "Access AWS services through chat",
         "isSticky": true
       }
@@ -3378,7 +3378,7 @@
       }
     ],
     "configuration": {
-      "title": "Awsclaw: MCP",
+      "title": "Aws Claw: MCP",
       "properties": {
         "awsclaw.mcp.enabled": {
           "type": "boolean",
@@ -3438,75 +3438,63 @@
     "commands": [
       {
         "command": "awsclaw.AskAwsclaw",
-        "title": "Awsclaw:Ask Awsclaw"
+        "title": "Aws Claw:Ask Awsclaw"
       },
       {
         "command": "awsclaw.RefreshCredentials",
-        "title": "Awsclaw:Refresh Credentials"
+        "title": "Aws Claw:Refresh Credentials"
       },
       {
         "command": "awsclaw.ListAwsProfiles",
-        "title": "Awsclaw:List Profiles"
+        "title": "Aws Claw:List Profiles"
       },
       {
         "command": "awsclaw.SetAwsProfile",
-        "title": "Awsclaw:Set Active Profile"
+        "title": "Aws Claw:Set Active Profile"
       },
       {
         "command": "awsclaw.TestAwsConnection",
-        "title": "Awsclaw:Test Aws Connection"
+        "title": "Aws Claw:Test Aws Connection"
       },
       {
         "command": "awsclaw.SetAwsEndpoint",
-        "title": "Awsclaw:Set AWS Endpoint"
+        "title": "Aws Claw:Set AWS Endpoint"
       },
       {
         "command": "awsclaw.SetDefaultRegion",
-        "title": "Awsclaw:Set Default AWS Region"
+        "title": "Aws Claw:Set Default AWS Region"
       },
       {
         "command": "awsclaw.SetAwsReadonlyMode",
-        "title": "Awsclaw:Set AWS Readonly Mode"
+        "title": "Aws Claw:Set AWS Readonly Mode"
       },
       {
         "command": "awsclaw.OpenCloudWatchView",
-        "title": "Awsclaw:Open CloudWatch Log View"
+        "title": "Aws Claw:Open CloudWatch Log View"
       },
       {
         "command": "awsclaw.OpenS3ExplorerView",
-        "title": "Awsclaw:Open S3 Explorer View"
+        "title": "Aws Claw:Open S3 Explorer View"
       },
       {
         "command": "awsclaw.ShowCommandHistory",
-        "title": "Awsclaw:Command History"
+        "title": "Aws Claw:Command History"
       },
       {
         "command": "awsclaw.OpenServiceAccessView",
-        "title": "Awsclaw:Service Access Settings"
-      },
-      {
-        "command": "awsclaw.ActivatePro",
-        "title": "Awsclaw:Activate Pro"
-      },
-      {
-        "command": "awsclaw.EnterLicenseKey",
-        "title": "Awsclaw:Enter License Key"
-      },
-      {
-        "command": "awsclaw.ResetLicenseKey",
-        "title": "Awsclaw:Reset License Key"
+        "title": "Aws Claw:Service Access Settings"
       },
       {
         "command": "awsclaw.StartMcpServer",
-        "title": "Awsclaw:Start MCP Server"
+        "title": "Aws Claw:Start MCP Server"
       },
       {
         "command": "awsclaw.StopMcpServers",
-        "title": "Awsclaw:Stop MCP Servers"
+        "title": "Aws Claw:Stop MCP Servers"
       },
       {
         "command": "awsclaw.OpenMcpManageView",
-        "title": "Awsclaw:MCP Management"
+        "title": "Aws Claw:MCP Management"
       }
     ]
   },

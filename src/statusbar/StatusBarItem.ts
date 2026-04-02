@@ -4,11 +4,10 @@ import * as api from '../common/API';
 import * as ui from '../common/UI';
 import { ParsedIniData } from "@aws-sdk/types";
 import { Session } from '../common/Session';
-import { AIHandler } from '../chat/AIHandler';
 
 export class StatusBarItem implements vscode.Disposable {
 
-    public static WorkingText: string = "$(plug) Aws $(sync~spin)";
+    public static WorkingText: string = "$(plug) AwsClaw $(sync~spin)";
     public static ExecutingAwsCommandText: string = "$(plug) Aws $(loading~spin)";
     public static Current: StatusBarItem;
 
@@ -142,14 +141,14 @@ export class StatusBarItem implements vscode.Disposable {
     public RefreshText() {
         ui.logToOutput('StatusBarItem.RefreshText Started');
         
-        this.ToolTip = "Awsclaw: @aws How can I help you?";
+        this.ToolTip = "Aws Claw: @aws How can I help you?";
         if (!Session.Current?.CurrentCredentials) {
             this.ToolTip += "\nNo Aws Credentials Found !!!";
-            this.Text = "$(plug) Aws No Credentials";
+            this.Text = "$(plug) AwsClaw No Credentials";
         }
         else {
             this.ToolTip += "\nYou have Aws Credentials";
-            this.Text = "$(plug) Aws $(check)";
+            this.Text = "$(plug) AwsClaw $(check)";
         }
 
         this.ToolTip += "\nProfile: " + (Session.Current?.AwsProfile || "default");
@@ -195,7 +194,7 @@ export class StatusBarItem implements vscode.Disposable {
     }
 
     public static OpenCommandPalette() {
-        const extensionPrefix = 'Awsclaw:';
+        const extensionPrefix = 'Aws Claw:';
         vscode.commands.executeCommand('workbench.action.quickOpen', `> ${extensionPrefix}`);
     }
 

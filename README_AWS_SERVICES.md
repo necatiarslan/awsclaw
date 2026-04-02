@@ -4,7 +4,7 @@ This document provides a comprehensive reference of all AWS language model tools
 
 ## MCP Access
 
-- Local-only MCP stdio sessions can be started via **Awsclaw: Start MCP Server** (Command Palette). Up to 3 concurrent sessions are allowed; further requests queue until a session ends.
+- Local-only MCP stdio sessions can be started via **Aws Claw: Start MCP Server** (Command Palette). Up to 3 concurrent sessions are allowed; further requests queue until a session ends.
 - MCP tool availability is controlled separately from the Service Access view via settings (`awsclaw.mcp.disabledTools`).
 - Mutating operations still require confirmation before execution.
 
