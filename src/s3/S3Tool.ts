@@ -1,0 +1,453 @@
+import * as ui from '../common/UI';
+import { Session } from '../common/Session';
+import { BaseTool, BaseToolInput } from '../common/BaseTool';
+import { ClientManager } from '../common/ClientManager';
+import { AIHandler } from '../chat/AIHandler';
+import { S3Explorer } from './S3Explorer';
+import * as os from 'os';
+import * as path from 'path';
+import * as fs from 'fs';
+import {
+  S3Client,
+  HeadBucketCommand,
+  HeadObjectCommand,
+  ListBucketsCommand,
+  ListObjectsV2Command,
+  ListObjectVersionsCommand,
+  GetBucketPolicyCommand,
+  GetBucketNotificationConfigurationCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  CopyObjectCommand,
+  SelectObjectContentCommand,
+  GetBucketLocationCommand,
+  GetBucketVersioningCommand,
+  GetBucketEncryptionCommand,
+  GetBucketLifecycleConfigurationCommand,
+  GetBucketReplicationCommand,
+  GetBucketLoggingCommand,
+  GetBucketTaggingCommand,
+  GetBucketCorsCommand,
+  GetBucketWebsiteCommand,
+  GetBucketAccelerateConfigurationCommand,
+  GetBucketRequestPaymentCommand,
+  GetObjectAttributesCommand,
+  GetObjectLegalHoldCommand,
+  GetObjectRetentionCommand,
+  MetadataDirective,
+  CreateBucketCommand,
+  DeleteBucketCommand,
+  PutBucketVersioningCommand,
+  PutBucketEncryptionCommand,
+  PutBucketLifecycleConfigurationCommand,
+  PutBucketReplicationCommand,
+  PutBucketLoggingCommand,
+  PutBucketTaggingCommand,
+  PutBucketCorsCommand,
+  PutBucketWebsiteCommand,
+  PutBucketPolicyCommand,
+  PutBucketNotificationConfigurationCommand,
+  PutBucketAccelerateConfigurationCommand,
+  PutPublicAccessBlockCommand,
+  DeleteBucketPolicyCommand,
+  DeleteBucketTaggingCommand,
+  DeleteBucketWebsiteCommand,
+  DeleteBucketCorsCommand,
+  DeleteBucketLifecycleCommand,
+  DeleteBucketReplicationCommand,
+  PutObjectTaggingCommand,
+  DeleteObjectTaggingCommand,
+  PutObjectAclCommand,
+  PutObjectLegalHoldCommand,
+  PutObjectRetentionCommand,
+} from '@aws-sdk/client-s3';
+
+// Command type definition
+type S3Command =
+  | 'PutObject'
+  | 'DeleteObject'
+  | 'CopyObject'
+  | 'GetObject'
+  | 'HeadBucket'
+  | 'HeadObject'
+  | 'ListBuckets'
+  | 'ListObjectsV2'
+  | 'ListObjectVersions'
+  | 'GetBucketPolicy'
+  | 'GetBucketNotificationConfiguration'
+  | 'SelectObjectContent'
+  | 'GetBucketLocation'
+  | 'GetBucketVersioning'
+  | 'GetBucketEncryption'
+  | 'GetBucketLifecycleConfiguration'
+  | 'GetBucketReplication'
+  | 'GetBucketLogging'
+  | 'GetBucketTagging'
+  | 'GetBucketCors'
+  | 'GetBucketWebsite'
+  | 'GetBucketAccelerateConfiguration'
+  | 'GetBucketRequestPayment'
+  | 'GetObjectAttributes'
+  | 'GetObjectLegalHold'
+  | 'GetObjectRetention'
+  | 'OpenS3Explorer'
+  | 'CreateBucket'
+  | 'DeleteBucket'
+  | 'PutBucketVersioning'
+  | 'PutBucketEncryption'
+  | 'PutBucketLifecycleConfiguration'
+  | 'PutBucketReplication'
+  | 'PutBucketLogging'
+  | 'PutBucketTagging'
+  | 'PutBucketCors'
+  | 'PutBucketWebsite'
+  | 'PutBucketPolicy'
+  | 'PutBucketNotificationConfiguration'
+  | 'PutBucketAccelerateConfiguration'
+  | 'PutPublicAccessBlock'
+  | 'DeleteBucketPolicy'
+  | 'DeleteBucketTagging'
+  | 'DeleteBucketWebsite'
+  | 'DeleteBucketCors'
+  | 'DeleteBucketLifecycle'
+  | 'DeleteBucketReplication'
+  | 'PutObjectTagging'
+  | 'DeleteObjectTagging'
+  | 'PutObjectAcl'
+  | 'PutObjectLegalHold'
+  | 'PutObjectRetention';
+
+// Input interface
+interface S3ToolInput extends BaseToolInput {
+  command: S3Command;
+}
+
+// Interfaces for parameters (kept for type safety in method signatures)
+interface HeadBucketParams { Bucket: string; }
+interface HeadObjectParams { Bucket: string; Key: string; VersionId?: string; IfMatch?: string; IfModifiedSince?: Date; IfNoneMatch?: string; IfUnmodifiedSince?: Date; }
+interface ListBucketsParams { }
+interface ListObjectsV2Params { Bucket: string; Prefix?: string; Delimiter?: string; MaxKeys?: number; ContinuationToken?: string; StartAfter?: string; }
+interface ListObjectVersionsParams { Bucket: string; Prefix?: string; Delimiter?: string; MaxKeys?: number; KeyMarker?: string; VersionIdMarker?: string; }
+interface PutObjectParams { Bucket: string; Key: string; Body?: string; ContentType?: string; Metadata?: Record<string, string>; }
+interface DeleteObjectParams { Bucket: string; Key: string; VersionId?: string; }
+interface CopyObjectParams { Bucket: string; CopySource: string; Key: string; Metadata?: Record<string, string>; MetadataDirective?: MetadataDirective; }
+interface GetBucketPolicyParams { Bucket: string; }
+interface GetBucketNotificationConfigurationParams { Bucket: string; }
+interface GetObjectParams { Bucket: string; Key: string; VersionId?: string; DownloadToTemp?: boolean; AsText?: boolean; }
+interface SelectObjectContentParams { Bucket: string; Key: string; Expression: string; ExpressionType: string; InputSerialization: any; OutputSerialization: any; }
+interface OpenS3ExplorerParams { Bucket: string; Key?: string; }
+
+export class S3Tool extends BaseTool<S3ToolInput> {
+  protected readonly toolName = 'S3Tool';
+
+  private async getS3Client(): Promise<S3Client> {
+    return ClientManager.Instance.getClient('s3', async (session) => {
+      const credentials = await session.GetCredentials();
+      return new S3Client({
+        credentials,
+        endpoint: session.AwsEndPoint,
+        forcePathStyle: true,
+        region: session.AwsRegion,
+      });
+    });
+  }
+
+  protected updateResourceContext(command: string, params: Record<string, any>): void {
+    if ("Bucket" in params && typeof params.Bucket === 'string') {
+      AIHandler.Current.updateLatestResource({ type: "S3 Bucket", name: params.Bucket });
+    }
+  }
+
+  protected async executeCommand(command: S3Command, params: Record<string, any>): Promise<any> {
+    const client = await this.getS3Client();
+
+    switch (command) {
+      case 'HeadBucket':
+        return await client.send(new HeadBucketCommand(params as HeadBucketParams));
+
+      case 'HeadObject':
+        return await client.send(new HeadObjectCommand(params as HeadObjectParams));
+
+      case 'ListBuckets':
+        return await client.send(new ListBucketsCommand(params as ListBucketsParams));
+
+      case 'ListObjectsV2':
+        return await client.send(new ListObjectsV2Command(params as ListObjectsV2Params));
+
+      case 'ListObjectVersions':
+        return await client.send(new ListObjectVersionsCommand(params as ListObjectVersionsParams));
+
+      case 'GetBucketPolicy':
+        return await client.send(new GetBucketPolicyCommand(params as GetBucketPolicyParams));
+
+      case 'GetBucketNotificationConfiguration':
+        return await client.send(new GetBucketNotificationConfigurationCommand(params as GetBucketNotificationConfigurationParams));
+
+      case 'GetObject':
+        return await this.handleGetObject(client, params as GetObjectParams);
+
+      case 'PutObject':
+        return await client.send(new PutObjectCommand(params as PutObjectParams));
+
+      case 'DeleteObject':
+        return await client.send(new DeleteObjectCommand(params as DeleteObjectParams));
+
+      case 'CopyObject':
+        return await client.send(new CopyObjectCommand(params as CopyObjectParams));
+
+      case 'SelectObjectContent':
+        return await this.handleSelectObjectContent(client, params as SelectObjectContentParams);
+
+      case 'GetBucketLocation':
+        return await client.send(new GetBucketLocationCommand(params as any));
+
+      case 'GetBucketVersioning':
+        return await client.send(new GetBucketVersioningCommand(params as any));
+
+      case 'GetBucketEncryption':
+        return await client.send(new GetBucketEncryptionCommand(params as any));
+
+      case 'GetBucketLifecycleConfiguration':
+        return await client.send(new GetBucketLifecycleConfigurationCommand(params as any));
+
+      case 'GetBucketReplication':
+        return await client.send(new GetBucketReplicationCommand(params as any));
+
+      case 'GetBucketLogging':
+        return await client.send(new GetBucketLoggingCommand(params as any));
+
+      case 'GetBucketTagging':
+        return await client.send(new GetBucketTaggingCommand(params as any));
+
+      case 'GetBucketCors':
+        return await client.send(new GetBucketCorsCommand(params as any));
+
+      case 'GetBucketWebsite':
+        return await client.send(new GetBucketWebsiteCommand(params as any));
+
+      case 'GetBucketAccelerateConfiguration':
+        return await client.send(new GetBucketAccelerateConfigurationCommand(params as any));
+
+      case 'GetBucketRequestPayment':
+        return await client.send(new GetBucketRequestPaymentCommand(params as any));
+
+      case 'GetObjectAttributes':
+        return await client.send(new GetObjectAttributesCommand(params as any));
+
+      case 'GetObjectLegalHold':
+        return await client.send(new GetObjectLegalHoldCommand(params as any));
+
+      case 'GetObjectRetention':
+        return await client.send(new GetObjectRetentionCommand(params as any));
+
+      case 'OpenS3Explorer':
+        return await this.handleOpenS3Explorer(params as OpenS3ExplorerParams);
+
+      case 'CreateBucket':
+        return await client.send(new CreateBucketCommand(params as any));
+
+      case 'DeleteBucket':
+        return await client.send(new DeleteBucketCommand(params as any));
+
+      case 'PutBucketVersioning':
+        return await client.send(new PutBucketVersioningCommand(params as any));
+
+      case 'PutBucketEncryption':
+        return await client.send(new PutBucketEncryptionCommand(params as any));
+
+      case 'PutBucketLifecycleConfiguration':
+        return await client.send(new PutBucketLifecycleConfigurationCommand(params as any));
+
+      case 'PutBucketReplication':
+        return await client.send(new PutBucketReplicationCommand(params as any));
+
+      case 'PutBucketLogging':
+        return await client.send(new PutBucketLoggingCommand(params as any));
+
+      case 'PutBucketTagging':
+        return await client.send(new PutBucketTaggingCommand(params as any));
+
+      case 'PutBucketCors':
+        return await client.send(new PutBucketCorsCommand(params as any));
+
+      case 'PutBucketWebsite':
+        return await client.send(new PutBucketWebsiteCommand(params as any));
+
+      case 'PutBucketPolicy':
+        return await client.send(new PutBucketPolicyCommand(params as any));
+
+      case 'PutBucketNotificationConfiguration':
+        return await client.send(new PutBucketNotificationConfigurationCommand(params as any));
+
+      case 'PutBucketAccelerateConfiguration':
+        return await client.send(new PutBucketAccelerateConfigurationCommand(params as any));
+
+      case 'PutPublicAccessBlock':
+        return await client.send(new PutPublicAccessBlockCommand(params as any));
+
+      case 'DeleteBucketPolicy':
+        return await client.send(new DeleteBucketPolicyCommand(params as any));
+
+      case 'DeleteBucketTagging':
+        return await client.send(new DeleteBucketTaggingCommand(params as any));
+
+      case 'DeleteBucketWebsite':
+        return await client.send(new DeleteBucketWebsiteCommand(params as any));
+
+      case 'DeleteBucketCors':
+        return await client.send(new DeleteBucketCorsCommand(params as any));
+
+      case 'DeleteBucketLifecycle':
+        return await client.send(new DeleteBucketLifecycleCommand(params as any));
+
+      case 'DeleteBucketReplication':
+        return await client.send(new DeleteBucketReplicationCommand(params as any));
+
+      case 'PutObjectTagging':
+        return await client.send(new PutObjectTaggingCommand(params as any));
+
+      case 'DeleteObjectTagging':
+        return await client.send(new DeleteObjectTaggingCommand(params as any));
+
+      case 'PutObjectAcl':
+        return await client.send(new PutObjectAclCommand(params as any));
+
+      case 'PutObjectLegalHold':
+        return await client.send(new PutObjectLegalHoldCommand(params as any));
+
+      case 'PutObjectRetention':
+        return await client.send(new PutObjectRetentionCommand(params as any));
+
+      default:
+        throw new Error(`Unsupported command: ${command}`);
+    }
+  }
+
+  private async handleGetObject(client: S3Client, params: GetObjectParams): Promise<any> {
+    const command = new GetObjectCommand({
+      Bucket: params.Bucket,
+      Key: params.Key,
+      VersionId: params.VersionId
+    });
+    const result = await client.send(command);
+
+    // Convert body stream to buffer
+    const bodyBuffer = await this.streamToBuffer(result.Body as any);
+
+    // Extract only serializable metadata
+    const metadata = {
+      ContentType: result.ContentType,
+      ContentLength: result.ContentLength,
+      ETag: result.ETag,
+      LastModified: result.LastModified,
+      VersionId: result.VersionId,
+      Metadata: result.Metadata,
+      $metadata: {
+        httpStatusCode: result.$metadata?.httpStatusCode,
+        requestId: result.$metadata?.requestId,
+      }
+    };
+
+    if (params.DownloadToTemp) {
+      // Download to temp folder (async to avoid blocking extension host)
+      const tempDir = os.tmpdir();
+      const fileName = path.basename(params.Key);
+      const filePath = path.join(tempDir, fileName);
+      await fs.promises.writeFile(filePath, bodyBuffer);
+
+      return {
+        ...metadata,
+        LocalPath: filePath,
+        FileSize: bodyBuffer.length,
+        Message: `File downloaded to ${filePath}`
+      };
+    } else if (params.AsText) {
+      // Return content as text
+      const textContent = bodyBuffer.toString('utf-8');
+      return {
+        ...metadata,
+        TextContent: textContent,
+        ContentLength: textContent.length
+      };
+    } else {
+      // Return metadata with base64 content
+      return {
+        ...metadata,
+        Body: bodyBuffer.toString('base64'),
+        ContentLength: bodyBuffer.length,
+        Message: 'File content returned as base64'
+      };
+    }
+  }
+
+  private async handleSelectObjectContent(client: S3Client, params: SelectObjectContentParams): Promise<any> {
+    const command = new SelectObjectContentCommand({
+      Bucket: params.Bucket,
+      Key: params.Key,
+      Expression: params.Expression,
+      ExpressionType: params.ExpressionType as "SQL",
+      InputSerialization: params.InputSerialization,
+      OutputSerialization: params.OutputSerialization
+    });
+    
+    const result = await client.send(command);
+    
+    // Process the event stream
+    const records: string[] = [];
+    if (result.Payload) {
+      for await (const event of result.Payload) {
+        if (event.Records) {
+          const recordsBuffer = event.Records.Payload;
+          if (recordsBuffer) {
+            records.push(Buffer.from(recordsBuffer).toString('utf-8'));
+          }
+        }
+      }
+    }
+    
+    return {
+      Bucket: params.Bucket,
+      Key: params.Key,
+      Expression: params.Expression,
+      Records: records.join(''),
+      RecordCount: records.length,
+      $metadata: {
+        httpStatusCode: result.$metadata?.httpStatusCode,
+        requestId: result.$metadata?.requestId,
+      }
+    };
+  }
+
+  private async handleOpenS3Explorer(params: OpenS3ExplorerParams): Promise<any> {
+    if (!Session.Current) {
+      throw new Error('Session not initialized');
+    }
+
+    // Open the S3Explorer view
+    S3Explorer.Render(Session.Current.ExtensionUri, params.Bucket, params.Key);
+
+    return {
+      success: true,
+      message: `S3 Explorer opened for bucket: ${params.Bucket}${params.Key ? `, key: ${params.Key}` : ''}`,
+      Bucket: params.Bucket,
+      Key: params.Key
+    };
+  }
+
+  private async streamToBuffer(stream: any): Promise<Buffer> {
+    if (!stream) {
+      return Buffer.alloc(0);
+    }
+    const chunks: Buffer[] = [];
+    return new Promise((resolve, reject) => {
+      stream.on('data', (chunk: Buffer) => chunks.push(chunk));
+      stream.on('error', (err: Error) => {
+        ui.logToOutput('S3Tool: Stream error while reading object', err);
+        reject(err);
+      });
+      stream.on('end', () => resolve(Buffer.concat(chunks)));
+    });
+  }
+}
+

@@ -1,0 +1,449 @@
+{
+  "name": "EC2Tool",
+  "toolReferenceName": "EC2Tool",
+  "displayName": "EC2 Tool",
+  "modelDescription": "Execute AWS EC2 commands for managing compute and network resources. ALWAYS provide params object. Supports read operations, instance lifecycle (launch, start, stop, terminate, reboot), VPC/network creation and configuration (VPCs, subnets, security groups, internet/NAT gateways, route tables), storage (volumes, snapshots, AMIs), and resource tagging. Examples: RunInstances {command:'RunInstances', params:{ImageId:'ami-123',InstanceType:'t3.micro',MinCount:1,MaxCount:1}}, CreateVpc {command:'CreateVpc', params:{CidrBlock:'10.0.0.0/16'}}, CreateSecurityGroup {command:'CreateSecurityGroup', params:{GroupName:'MyGroup',Description:'My security group',VpcId:'vpc-123'}}, DescribeInstances {command:'DescribeInstances', params:{InstanceIds:['i-123']}}.",
+  "userDescription": "Manage EC2 compute and network resources: launch/stop/terminate instances, create/delete VPCs and subnets, manage security groups, volumes, snapshots, AMIs, and query all resource types",
+  "tags": [
+    "aws",
+    "ec2",
+    "compute",
+    "network",
+    "instances"
+  ],
+  "icon": "$(vm)",
+  "canBeReferencedInPrompt": true,
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "command",
+      "params"
+    ],
+    "properties": {
+      "command": {
+        "type": "string",
+        "enum": [
+          "AllocateAddress",
+          "AssociateAddress",
+          "AssociateRouteTable",
+          "AttachInternetGateway",
+          "AttachVolume",
+          "AuthorizeSecurityGroupEgress",
+          "AuthorizeSecurityGroupIngress",
+          "CreateImage",
+          "CreateInternetGateway",
+          "CreateKeyPair",
+          "CreateLaunchTemplate",
+          "CreateNatGateway",
+          "CreateRoute",
+          "CreateRouteTable",
+          "CreateSecurityGroup",
+          "CreateSnapshot",
+          "CreateSubnet",
+          "CreateTags",
+          "CreateVolume",
+          "CreateVpc",
+          "DeleteInternetGateway",
+          "DeleteKeyPair",
+          "DeleteLaunchTemplate",
+          "DeleteNatGateway",
+          "DeleteRoute",
+          "DeleteRouteTable",
+          "DeleteSecurityGroup",
+          "DeleteSnapshot",
+          "DeleteSubnet",
+          "DeleteTags",
+          "DeleteVolume",
+          "DeleteVpc",
+          "DeregisterImage",
+          "DescribeAccountAttributes",
+          "DescribeAddresses",
+          "DescribeAvailabilityZones",
+          "DescribeFlowLogs",
+          "DescribeImages",
+          "DescribeInstances",
+          "DescribeInstanceStatus",
+          "DescribeInstanceTypeOfferings",
+          "DescribeInstanceTypes",
+          "DescribeInternetGateways",
+          "DescribeKeyPairs",
+          "DescribeLaunchTemplates",
+          "DescribeNatGateways",
+          "DescribeNetworkInterfaces",
+          "DescribeRegions",
+          "DescribeRouteTables",
+          "DescribeSecurityGroupRules",
+          "DescribeSecurityGroups",
+          "DescribeSnapshots",
+          "DescribeSpotPriceHistory",
+          "DescribeSubnets",
+          "DescribeTags",
+          "DescribeTransitGateways",
+          "DescribeVolumes",
+          "DescribeVpcEndpoints",
+          "DescribeVpcPeeringConnections",
+          "DescribeVpcs",
+          "DetachInternetGateway",
+          "DetachVolume",
+          "DisassociateAddress",
+          "DisassociateRouteTable",
+          "GetConsoleOutput",
+          "GetHostReservationPurchasePreview",
+          "GetLaunchTemplateData",
+          "GetPasswordData",
+          "RebootInstances",
+          "ReleaseAddress",
+          "RevokeSecurityGroupEgress",
+          "RevokeSecurityGroupIngress",
+          "RunInstances",
+          "StartInstances",
+          "StopInstances",
+          "TerminateInstances"
+        ],
+        "description": "The EC2 command to execute"
+      },
+      "params": {
+        "type": "object",
+        "description": "REQUIRED parameters object. Always include this even if empty. Use native EC2 API field names (e.g., InstanceIds, Filters, Owners).",
+        "properties": {
+          "InstanceId": {
+            "type": "string",
+            "description": "Single instance ID (Used by: GetConsoleOutput (Required), GetPasswordData (Required))"
+          },
+          "InstanceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of instance IDs (Used by: DescribeInstances, DescribeInstanceStatus)"
+          },
+          "Filters": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "EC2 filter array with Name and Values[] (Used by: DescribeAddresses, DescribeAvailabilityZones, DescribeFlowLogs, DescribeImages, DescribeInstances, DescribeInstanceStatus, DescribeInstanceTypeOfferings, DescribeInstanceTypes, DescribeInternetGateways, DescribeKeyPairs, DescribeLaunchTemplates, DescribeNatGateways, DescribeNetworkInterfaces, DescribeRouteTables, DescribeSecurityGroupRules, DescribeSecurityGroups, DescribeSnapshots, DescribeSubnets, DescribeTags, DescribeTransitGateways, DescribeVpcEndpoints, DescribeVpcPeeringConnections, DescribeVpcs)"
+          },
+          "Owners": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Image owners (Used by: DescribeImages)"
+          },
+          "DryRun": {
+            "type": "boolean",
+            "description": "Validate permissions without running the request (Used by: DescribeAddresses, DescribeAvailabilityZones, DescribeImages, DescribeInstances, DescribeInstanceStatus, DescribeKeyPairs, DescribeRegions, DescribeSecurityGroups, DescribeSnapshots, DescribeSubnets, DescribeTags, DescribeVolumes, DescribeVpcs)"
+          },
+          "MaxResults": {
+            "type": "number",
+            "description": "Pagination: maximum results (Used by: DescribeImages, DescribeInstances, DescribeSnapshots, DescribeVolumes)"
+          },
+          "NextToken": {
+            "type": "string",
+            "description": "Pagination token for next page (Used by: DescribeImages, DescribeInstances, DescribeSnapshots, DescribeVolumes)"
+          },
+          "RegionNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Specific region names (Used by: DescribeRegions)"
+          },
+          "InstanceTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Instance type names (Used by: DescribeInstanceTypes)"
+          },
+          "LocationType": {
+            "type": "string",
+            "enum": ["region", "availability-zone", "availability-zone-id"],
+            "description": "Location type for instance type offerings (Used by: DescribeInstanceTypeOfferings)"
+          },
+          "LaunchTemplateIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Launch template IDs (Used by: DescribeLaunchTemplates)"
+          },
+          "LaunchTemplateNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Launch template names (Used by: DescribeLaunchTemplates)"
+          },
+          "NetworkInterfaceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Network interface IDs (Used by: DescribeNetworkInterfaces)"
+          },
+          "RouteTableIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Route table IDs (Used by: DescribeRouteTables)"
+          },
+          "InternetGatewayIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Internet gateway IDs (Used by: DescribeInternetGateways)"
+          },
+          "NatGatewayIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "NAT gateway IDs (Used by: DescribeNatGateways)"
+          },
+          "GroupIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Security group IDs (Used by: DescribeSecurityGroupRules, DescribeSecurityGroups)"
+          },
+          "FlowLogIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Flow log IDs (Used by: DescribeFlowLogs)"
+          },
+          "TransitGatewayIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Transit gateway IDs (Used by: DescribeTransitGateways)"
+          },
+          "VpcEndpointIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "VPC endpoint IDs (Used by: DescribeVpcEndpoints)"
+          },
+          "VpcPeeringConnectionIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "VPC peering connection IDs (Used by: DescribeVpcPeeringConnections)"
+          },
+          "StartTime": {
+            "type": "string",
+            "description": "Start time for spot price history (Used by: DescribeSpotPriceHistory)"
+          },
+          "EndTime": {
+            "type": "string",
+            "description": "End time for spot price history (Used by: DescribeSpotPriceHistory)"
+          },
+          "ProductDescriptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Product descriptions for spot price history (Used by: DescribeSpotPriceHistory)"
+          },
+          "ImageId": {
+            "type": "string",
+            "description": "AMI ID for launching instances or creating images (Used by: RunInstances (Required), CreateImage, DeregisterImage)"
+          },
+          "InstanceType": {
+            "type": "string",
+            "description": "Instance type like t3.micro, m5.large (Used by: RunInstances (Required))"
+          },
+          "MinCount": {
+            "type": "number",
+            "description": "Minimum number of instances to launch (Used by: RunInstances (Required))"
+          },
+          "MaxCount": {
+            "type": "number",
+            "description": "Maximum number of instances to launch (Used by: RunInstances (Required))"
+          },
+          "KeyName": {
+            "type": "string",
+            "description": "Key pair name for SSH access (Used by: RunInstances, CreateKeyPair, DeleteKeyPair)"
+          },
+          "SecurityGroups": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Security group names (Used by: RunInstances)"
+          },
+          "SecurityGroupIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Security group IDs (Used by: RunInstances)"
+          },
+          "UserData": {
+            "type": "string",
+            "description": "Base64-encoded user data script (Used by: RunInstances)"
+          },
+          "SubnetId": {
+            "type": "string",
+            "description": "Subnet ID for instance/NAT gateway placement (Used by: RunInstances, CreateSubnet, DeleteSubnet, CreateNatGateway)"
+          },
+          "VpcId": {
+            "type": "string",
+            "description": "VPC ID for resource creation (Used by: CreateSubnet (Required), CreateSecurityGroup (Required), DeleteVpc, AttachInternetGateway, DetachInternetGateway, CreateRouteTable)"
+          },
+          "CidrBlock": {
+            "type": "string",
+            "description": "CIDR block like 10.0.0.0/16 (Used by: CreateVpc (Required), CreateSubnet (Required))"
+          },
+          "GroupName": {
+            "type": "string",
+            "description": "Security group name (Used by: CreateSecurityGroup (Required), DeleteSecurityGroup)"
+          },
+          "GroupId": {
+            "type": "string",
+            "description": "Security group ID (Used by: AuthorizeSecurityGroupIngress, AuthorizeSecurityGroupEgress, RevokeSecurityGroupIngress, RevokeSecurityGroupEgress, DeleteSecurityGroup)"
+          },
+          "Description": {
+            "type": "string",
+            "description": "Resource description (Used by: CreateSecurityGroup (Required), CreateSnapshot, CreateVolume)"
+          },
+          "IpPermissions": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Security group rule definitions (Used by: AuthorizeSecurityGroupIngress, AuthorizeSecurityGroupEgress, RevokeSecurityGroupIngress, RevokeSecurityGroupEgress)"
+          },
+          "VolumeId": {
+            "type": "string",
+            "description": "EBS volume ID (Used by: DeleteVolume, AttachVolume (Required), DetachVolume (Required), CreateSnapshot)"
+          },
+          "AvailabilityZone": {
+            "type": "string",
+            "description": "Availability zone for volume creation (Used by: CreateVolume (Required))"
+          },
+          "Size": {
+            "type": "number",
+            "description": "Volume size in GiB (Used by: CreateVolume)"
+          },
+          "VolumeType": {
+            "type": "string",
+            "description": "Volume type: gp2, gp3, io1, io2, st1, sc1 (Used by: CreateVolume)"
+          },
+          "Device": {
+            "type": "string",
+            "description": "Device name like /dev/sdf (Used by: AttachVolume (Required), DetachVolume)"
+          },
+          "SnapshotId": {
+            "type": "string",
+            "description": "Snapshot ID (Used by: CreateVolume, DeleteSnapshot)"
+          },
+          "Name": {
+            "type": "string",
+            "description": "Resource name (Used by: CreateImage, CreateSnapshot, CreateLaunchTemplate)"
+          },
+          "NoReboot": {
+            "type": "boolean",
+            "description": "Don't reboot instance when creating image (Used by: CreateImage)"
+          },
+          "Resources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Resource IDs to tag (Used by: CreateTags (Required), DeleteTags)"
+          },
+          "Tags": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Tag key-value pairs (Used by: CreateTags (Required), DeleteTags, RunInstances, CreateVpc, CreateSubnet, CreateVolume)"
+          },
+          "InternetGatewayId": {
+            "type": "string",
+            "description": "Internet gateway ID (Used by: DeleteInternetGateway, AttachInternetGateway (Required), DetachInternetGateway (Required))"
+          },
+          "NatGatewayId": {
+            "type": "string",
+            "description": "NAT gateway ID (Used by: DeleteNatGateway)"
+          },
+          "AllocationId": {
+            "type": "string",
+            "description": "Elastic IP allocation ID (Used by: CreateNatGateway (Required), ReleaseAddress, AssociateAddress)"
+          },
+          "RouteTableId": {
+            "type": "string",
+            "description": "Route table ID (Used by: CreateRoute (Required), DeleteRoute (Required), DeleteRouteTable, AssociateRouteTable (Required), DisassociateRouteTable)"
+          },
+          "DestinationCidrBlock": {
+            "type": "string",
+            "description": "Destination CIDR for route (Used by: CreateRoute, DeleteRoute)"
+          },
+          "GatewayId": {
+            "type": "string",
+            "description": "Gateway ID for route target (Used by: CreateRoute)"
+          },
+          "AssociationId": {
+            "type": "string",
+            "description": "Route table association ID (Used by: DisassociateRouteTable (Required))"
+          },
+          "LaunchTemplateName": {
+            "type": "string",
+            "description": "Launch template name (Used by: CreateLaunchTemplate, DeleteLaunchTemplate)"
+          },
+          "LaunchTemplateId": {
+            "type": "string",
+            "description": "Launch template ID (Used by: DeleteLaunchTemplate)"
+          },
+          "LaunchTemplateData": {
+            "type": "object",
+            "description": "Launch template configuration (Used by: CreateLaunchTemplate (Required))"
+          },
+          "Domain": {
+            "type": "string",
+            "description": "Domain: vpc or standard (Used by: AllocateAddress)"
+          },
+          "AllocationIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Elastic IP allocation IDs (Used by: DescribeAddresses)"
+          },
+          "NetworkInterfaceId": {
+            "type": "string",
+            "description": "Network interface ID (Used by: AssociateAddress)"
+          },
+          "PrivateIpAddress": {
+            "type": "string",
+            "description": "Private IP address (Used by: AssociateAddress)"
+          },
+          "AssociationIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Elastic IP association IDs (Used by: DisassociateAddress)"
+          },
+          "Force": {
+            "type": "boolean",
+            "description": "Force operation (Used by: StopInstances, DetachVolume)"
+          }
+        }
+      }
+    }
+  },
+  "schemaVersion": "1.0",
+  "deprecated": false,
+  "addedInVersion": "1.0.0"
+}
