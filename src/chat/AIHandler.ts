@@ -1116,7 +1116,7 @@ export class AIHandler {
 
     if (!(await this.isChatCommandAvailable())) {
       ui.showErrorMessage(
-        "Chat command is not available. Please ensure you have access to VS Code AI features.",
+        "Please Start MCP Server and configure your IDE to use AWS Claw AI features",
         undefined
       );
       return;
