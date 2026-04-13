@@ -99,6 +99,16 @@ Click [here](README_AWS_SERVICES.md) for the full list of supported AWS services
    - Publish a message to my SNS topic
 5. **Review results**: The assistant will call the appropriate tool, stream results, and suggest follow-up actions.
 
+## 🧠 Install Skills
+
+Aws Claw ships with a set of agent skills that teach GitHub Copilot how to work with AWS services. Install them with:
+
+```bash
+npx skills add necatiarslan/awsclaw
+```
+
+Once installed, the skills are available in your agent sessions and provide the assistant with deep AWS service knowledge, best practices, and tool-usage guidance for all supported services.
+
 ## 👮 Authentication & Security
 
 - **Credentials**: Resolved via the AWS SDK provider chain. The selected profile is stored in VS Code global state and reapplied across sessions.
