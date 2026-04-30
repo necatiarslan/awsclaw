@@ -3,6 +3,12 @@ import * as net from 'net';
 import { McpDispatcher } from './McpDispatcher';
 import * as ui from '../common/UI';
 
+interface PendingRequest {
+    resolve: (value: any) => void;
+    reject: (error: Error) => void;
+    timer: NodeJS.Timeout;
+}
+
 export class McpBridgeServer implements vscode.Disposable {
     private server?: net.Server;
     private running = false;
@@ -100,11 +106,64 @@ export class McpBridgeServer implements vscode.Disposable {
     private beginSession(socket: net.Socket): void {
         this.active++;
         ui.logToOutput(`MCP bridge: session started. Total active: ${this.totalActive()}`);
-        const dispatcher = new McpDispatcher(this.getEnabledTools());
+        const pending = new Map<string | number, PendingRequest>();
+        let requestSeq = 1;
         let buffer = '';
 
         const writeLine = (obj: any) => {
             socket.write(JSON.stringify(obj) + '\n');
+        };
+
+        const outboundRequester = (method: string, params: Record<string, any>, timeoutMs = 120000): Promise<any> => {
+            const id = `server-${requestSeq++}`;
+            writeLine({
+                jsonrpc: '2.0',
+                id,
+                method,
+                params
+            });
+
+            return new Promise((resolve, reject) => {
+                const timer = setTimeout(() => {
+                    pending.delete(id);
+                    reject(new Error(`Timed out waiting for response to ${method}`));
+                }, timeoutMs);
+
+                pending.set(id, {
+                    resolve,
+                    reject,
+                    timer
+                });
+            });
+        };
+
+        const dispatcher = new McpDispatcher(this.getEnabledTools(), { outboundRequester });
+
+        const isResponseMessage = (message: any): boolean => {
+            return (
+                !!message &&
+                typeof message === 'object' &&
+                message.id !== undefined &&
+                message.method === undefined &&
+                (Object.prototype.hasOwnProperty.call(message, 'result') || Object.prototype.hasOwnProperty.call(message, 'error'))
+            );
+        };
+
+        const settlePending = (message: any): boolean => {
+            const req = pending.get(message.id);
+            if (!req) {
+                return false;
+            }
+
+            clearTimeout(req.timer);
+            pending.delete(message.id);
+
+            if (Object.prototype.hasOwnProperty.call(message, 'error')) {
+                req.reject(new Error(message.error?.message || 'MCP client returned an error'));
+            } else {
+                req.resolve(message.result);
+            }
+            return true;
         };
 
         socket.on('data', async (chunk) => {
@@ -121,6 +180,12 @@ export class McpBridgeServer implements vscode.Disposable {
                     writeLine({ jsonrpc: '2.0', error: { message: 'Invalid JSON', data: e?.message } });
                     continue;
                 }
+
+                if (isResponseMessage(req)) {
+                    settlePending(req);
+                    continue;
+                }
+
                 try {
                     const res = await dispatcher.handle(req);
                     if (res) {
@@ -134,6 +199,11 @@ export class McpBridgeServer implements vscode.Disposable {
 
         const close = () => {
             this.active = Math.max(0, this.active - 1);
+            for (const [id, request] of pending.entries()) {
+                clearTimeout(request.timer);
+                request.reject(new Error(`Connection closed before response was received for request ${id}`));
+            }
+            pending.clear();
             try { socket.destroy(); } catch {}
             this.tryPromoteQueued();
         };

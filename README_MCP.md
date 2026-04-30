@@ -56,12 +56,17 @@ Override the bridge settings by defining these variables before starting the MCP
 | `AWSCLAW_MCP_PORT` | `37114` | TCP port for the bridge server |
 | `AWSCLAW_MCP_HOST` | `127.0.0.1` | Network host for the bridge server |
 
-## 6. Security and Manual Confirmations
+## 6. Security and Human-in-the-Loop Confirmations
 
-To prevent accidental destructive actions, certain AWS commands (e.g., `DeleteBucket`, `TerminateInstances`) require **manual confirmation** within the UI.
+To prevent accidental destructive actions, certain AWS commands (for example, `DeleteBucket`, `TerminateInstances`) require explicit user approval.
 
-If a client sends a destructive command:
-1.  The MCP request will hang temporarily.
-2.  A notification will appear in the UI asking you to **Proceed** or **Cancel**.
-3.  The MCP response will be returned only after you interact with the UI.
+For MCP clients, approvals now use MCP Human-in-the-Loop support via `elicitation/create` (form mode):
+1.  Client calls `tools/call` with an action command.
+2.  Server sends `elicitation/create` with an approval form.
+3.  Client presents approval UI and returns `accept`, `decline`, or `cancel`.
+4.  Server executes the command only when approval is accepted.
+
+Notes:
+- Clients must declare `capabilities.elicitation` with form-mode support during `initialize`.
+- If elicitation support is missing, action commands that require confirmation are rejected.
 

@@ -18,6 +18,20 @@ export interface McpResponse {
     };
 }
 
+export interface McpClientCapabilities {
+    elicitation?: {
+        form?: object;
+        url?: object;
+    };
+    [key: string]: any;
+}
+
+export type McpOutboundRequester = (
+    method: string,
+    params: Record<string, any>,
+    timeoutMs?: number
+) => Promise<any>;
+
 export interface McpSessionStreams {
     input: Readable;
     output: Writable;

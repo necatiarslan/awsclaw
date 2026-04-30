@@ -9,6 +9,7 @@ import { consumeToolInvocation, getDailyLimit } from './ToolUsageQuota';
 export interface BaseToolInput {
     command: string;
     params: Record<string, any>;
+    skipConfirmation?: boolean;
 }
 
 export abstract class BaseTool<TInput extends BaseToolInput> implements vscode.LanguageModelTool<TInput> {
@@ -35,7 +36,7 @@ export abstract class BaseTool<TInput extends BaseToolInput> implements vscode.L
         options: vscode.LanguageModelToolInvocationOptions<TInput>,
         token: vscode.CancellationToken
     ): Promise<vscode.LanguageModelToolResult> {
-        const { command, params } = options.input;
+        const { command, params, skipConfirmation } = options.input;
 
             
             const startTime = Date.now();
@@ -73,7 +74,7 @@ export abstract class BaseTool<TInput extends BaseToolInput> implements vscode.L
                     ]);
                 }
 
-                if (needsConfirmation(command)) {
+                if (!skipConfirmation && needsConfirmation(command)) {
                     const ok = await confirmProceed(command, params);
                     if (!ok) {
                         const cancelled = { success: false, command, message: 'User CANCELLED action command' };

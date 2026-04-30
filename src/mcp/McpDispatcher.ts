@@ -3,9 +3,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { BaseTool } from '../common/BaseTool';
 import { Session } from '../common/Session';
-import { McpRequest, McpResponse } from './types';
+import { needsConfirmation, confirmProceed } from '../common/ActionGuard';
+import { McpClientCapabilities, McpOutboundRequester, McpRequest, McpResponse } from './types';
 import { McpSession } from './McpSession';
-//import { needsConfirmation, confirmProceed } from '../common/ActionGuard';
 
 interface ToolRecord {
     name: string;
@@ -23,10 +23,13 @@ export class McpDispatcher {
     private readonly tools: Map<string, ToolRecord>;
     private readonly toolMetadata: Map<string, any>;
     private readonly resources: ResourceRecord[];
+    private clientCapabilities?: McpClientCapabilities;
+    private outboundRequester?: McpOutboundRequester;
 
-    constructor(enabledTools: Set<string>) {
+    constructor(enabledTools: Set<string>, options?: { outboundRequester?: McpOutboundRequester }) {
         this.tools = new Map<string, ToolRecord>();
         this.toolMetadata = new Map<string, any>();
+        this.outboundRequester = options?.outboundRequester;
         this.resources = [
             {
                 uri: `file://${path.join(__dirname, '../../README_AWS_SERVICES.md')}`,
@@ -54,6 +57,10 @@ export class McpDispatcher {
                 this.tools.set(t.name, t);
             }
         }
+    }
+
+    public setOutboundRequester(requester: McpOutboundRequester): void {
+        this.outboundRequester = requester;
     }
 
     public listTools(): any[] {
@@ -116,6 +123,7 @@ export class McpDispatcher {
             McpSession.Current?.writeLine(`Request Method: ${request.method}`);
 
             if (request.method === 'initialize') {
+                this.clientCapabilities = request.params?.capabilities as McpClientCapabilities | undefined;
                 return {
                     id: request.id!,
                     jsonrpc: '2.0',
@@ -215,12 +223,44 @@ export class McpDispatcher {
                     return { id: request.id!, jsonrpc: '2.0', error: { message: 'Session not initialized in VS Code', code: -32000 } };
                 }
 
-                // if (needsConfirmation(command)) {
-                //     const ok = await confirmProceed(command, params);
-                //     if (!ok) {
-                //         return { id: request.id!, jsonrpc: '2.0', error: { message: 'User cancelled action command', code: -32000 } };
-                //     }
-                // }
+                if (needsConfirmation(command)) {
+                    let approval: { approved: boolean; action: 'accept' | 'decline' | 'cancel'; message: string };
+
+                    if (!this.supportsFormElicitation()) {
+                        // Fallback to legacy modal confirmation when elicitation not supported
+                        const confirmed = await confirmProceed(command, params);
+                        approval = {
+                            approved: confirmed,
+                            action: confirmed ? 'accept' : 'decline',
+                            message: confirmed ? 'Approved' : `User declined action command: ${command}`
+                        };
+                    } else {
+                        if (!this.outboundRequester) {
+                            return {
+                                id: request.id!,
+                                jsonrpc: '2.0',
+                                error: {
+                                    message: 'This action requires user approval, but outbound MCP requests are not available in this transport.',
+                                    code: -32603
+                                }
+                            };
+                        }
+
+                        approval = await this.requestActionApproval(command, params);
+                    }
+
+                    if (!approval.approved) {
+                        const code = approval.action === 'cancel' ? -32000 : -32001;
+                        return {
+                            id: request.id!,
+                            jsonrpc: '2.0',
+                            error: {
+                                message: approval.message,
+                                code
+                            }
+                        };
+                    }
+                }
 
                 const s = Session.Current;
                 const originalDisabledTools = s.DisabledTools;
@@ -232,7 +272,7 @@ export class McpDispatcher {
                 const tokenSource = new vscode.CancellationTokenSource();
                 try {
                     const result = await tool.instance.invoke({
-                        input: { command, params }
+                        input: { command, params, skipConfirmation: true }
                     } as any, tokenSource.token);
 
                     const raw = (result as any).output ?? (result as any).content ?? result;
@@ -273,5 +313,107 @@ export class McpDispatcher {
         } catch (error: any) {
             return { id: request.id!, jsonrpc: '2.0', error: { message: error?.message || 'Internal error', code: -32603, data: error?.stack } };
         }
+    }
+
+    private supportsFormElicitation(): boolean {
+        const elicitation = this.clientCapabilities?.elicitation;
+        if (!elicitation) {
+            return false;
+        }
+
+        // Per MCP compatibility note, empty object implies form mode support.
+        return Object.keys(elicitation).length === 0 || elicitation.form !== undefined;
+    }
+
+    private summarizeParams(params?: Record<string, any>): string {
+        if (!params || Object.keys(params).length === 0) {
+            return '(none)';
+        }
+
+        const lines: string[] = [];
+        for (const [key, raw] of Object.entries(params)) {
+            lines.push(`${key}: ${this.formatParamValue(key, raw)}`);
+        }
+        return lines.join('\n');
+    }
+
+    private formatParamValue(key: string, value: any): string {
+        if (/(body|payload|zipfile|secret|token|password|credential|authorization)/i.test(key)) {
+            return '[...]';
+        }
+
+        if (typeof value === 'string') {
+            return value.length > 120 ? `${value.slice(0, 40)}...` : value;
+        }
+
+        if (typeof value === 'number' || typeof value === 'boolean' || value === null || value === undefined) {
+            return String(value);
+        }
+
+        const serialized = JSON.stringify(value);
+        return serialized.length > 120 ? `${serialized.slice(0, 40)}...` : serialized;
+    }
+
+    private async requestActionApproval(command: string, params?: Record<string, any>): Promise<{ approved: boolean; action: 'accept' | 'decline' | 'cancel'; message: string }> {
+        const requester = this.outboundRequester;
+        if (!requester) {
+            return {
+                approved: false,
+                action: 'cancel',
+                message: 'Action requires approval but approval transport is unavailable.'
+            };
+        }
+
+        const response = await requester(
+            'elicitation/create',
+            {
+                mode: 'form',
+                message: [
+                    `Approve action command: ${command}`,
+                    '',
+                    'Parameters:',
+                    this.summarizeParams(params)
+                ].join('\n'),
+                requestedSchema: {
+                    type: 'object',
+                    properties: {
+                        approve: {
+                            type: 'boolean',
+                            title: 'Approve',
+                            description: `Allow execution of ${command}`,
+                            default: false
+                        }
+                    },
+                    required: ['approve']
+                }
+            },
+            120000
+        );
+
+        const action = (response?.action as 'accept' | 'decline' | 'cancel' | undefined) ?? 'cancel';
+        if (action !== 'accept') {
+            return {
+                approved: false,
+                action,
+                message: action === 'decline'
+                    ? `User declined action command: ${command}`
+                    : `User cancelled approval request for command: ${command}`
+            };
+        }
+
+        const approved = response?.content?.approve === true;
+        if (!approved) {
+            return {
+                approved: false,
+                action: 'decline',
+                message: `Approval form was submitted without confirmation for command: ${command}`
+            };
+        }
+
+        return {
+            approved: true,
+            action: 'accept',
+            message: 'Approved'
+        };
     }
 }
