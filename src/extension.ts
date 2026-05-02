@@ -48,6 +48,28 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 	else {
 		ui.logToOutput(`Language model tools registration skipped for ${Session.Current?.HostAppName}`);
+
+		const serverPath = vscode.Uri.joinPath(context.extensionUri, 'out', 'mcp', 'server.js').fsPath;
+		const state = mcpManager.getSettingsSnapshot();
+
+		if (typeof (vscode.lm as any)?.registerMcpServerDefinitionProvider === 'function') {
+			context.subscriptions.push(
+				(vscode.lm as any).registerMcpServerDefinitionProvider('awsclaw.mcpProvider', {
+					provideMcpServerDefinitions: () => [
+						new (vscode as any).McpStdioServerDefinition({
+							label: 'Awsclaw AWS Tools',
+							command: 'node',
+							args: [serverPath],
+							env: {
+								AWSCLAW_MCP_PORT: String(state.port || 37114),
+								AWSCLAW_MCP_HOST: state.host || '127.0.0.1'
+							}
+						})
+					]
+				})
+			);
+			ui.logToOutput('Registered MCP server definition provider');
+		}
 	}
 
 	ui.logToOutput('Language model tools registered');
