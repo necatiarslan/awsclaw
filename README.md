@@ -123,6 +123,8 @@ Once installed, the skills are available in your agent sessions and provide the 
 
 - Improve natural language understanding for AWS-specific queries.
 - Setting Panel like copilot for better user experience.
+- Develop plugins for Claude Code and Codex
+- Develop a standalone version that can be used outside of VS Code.
 
 ## 💖 Links
 
