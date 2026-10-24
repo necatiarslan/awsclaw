@@ -47,7 +47,7 @@ export class StatusBarItem implements vscode.Disposable {
         let iniCredentials = await api.GetIniCredentials();
         if (iniCredentials) {
             this.HasCredentials = true;
-            let profileData = await api.GetIniProfileData();
+            let profileData = await api.GetAwsProfiles();
             try {
                 ui.logToOutput('StatusBarItem.GetCredentials IniData Found');
                 this.IniData = profileData;

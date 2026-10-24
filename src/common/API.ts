@@ -1,7 +1,6 @@
 import { homedir } from "os";
 import { sep } from "path";
 import { join } from "path";
-import { parseKnownFiles, SourceProfileInit } from "../aws-sdk/parseKnownFiles";
 import { ParsedIniData, AwsCredentialIdentity } from "@aws-sdk/types";
 import { CloudWatchLogsClient, DescribeLogGroupsCommand } from "@aws-sdk/client-cloudwatch-logs";
 import * as ui from './UI';
@@ -65,9 +64,16 @@ export async function GetCredentials(): Promise<AwsCredentialIdentity | undefine
   }
 }
 
-export async function GetIniProfileData(init: SourceProfileInit = {}): Promise<ParsedIniData> {
-  const profiles = await parseKnownFiles(init);
-  return profiles;
+import { loadSharedConfigFiles } from "@aws-sdk/shared-ini-file-loader";
+
+export async function GetAwsProfiles(): Promise<ParsedIniData> {
+  try {
+    const config = await loadSharedConfigFiles();
+    return config.credentialsFile;
+  } catch (err) {
+    console.error("Error loading AWS profiles:", err);
+    throw err;
+  }
 }
 
 export const ENV_CREDENTIALS_PATH = "AWS_SHARED_CREDENTIALS_FILE";
