@@ -3,7 +3,7 @@ import * as ui from './UI';
 import * as fs from 'fs';
 import { readFileSync } from 'fs';
 import { join, dirname, basename } from 'path';
-import archive from 'archiver';
+import { ZipArchive } from 'archiver';
 import * as os from 'os';
 import { AIHandler } from '../chat/AIHandler';
 import { BaseTool, BaseToolInput } from './BaseTool';
@@ -362,7 +362,7 @@ export class FileOperationsTool extends BaseTool<FileOperationsToolInput> {
       // Create zip file
       return await new Promise((resolve, reject) => {
         const output = fs.createWriteStream(zipPath);
-        const zipArchive = archive('zip', {
+        const zipArchive = new ZipArchive({
           zlib: { level: 9 } // Maximum compression
         });
         
@@ -391,7 +391,7 @@ export class FileOperationsTool extends BaseTool<FileOperationsToolInput> {
           zipArchive.file(filePath, { name: basename(filePath) });
         }
         
-        zipArchive.finalize();
+        zipArchive.finalize().catch(reject);
       });
     } catch (error: any) {
       throw new Error(`Failed to zip file ${filePath}: ${error.message}`);
